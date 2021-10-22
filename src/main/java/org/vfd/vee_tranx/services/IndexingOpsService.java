@@ -1,5 +1,6 @@
 package org.vfd.vee_tranx.services;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,12 +37,13 @@ public class IndexingOpsService {
 	private RestTemplate restTemplate;
 
 	private AppProperties appProperties;
-	
+
 	private BillerDAORepository billerDAORepo;
 
 	@Autowired
 	public IndexingOpsService(IndexDAORepository indexDAORepository, MongoTemplate mongoTemplate,
-			ObjectMapper objectMapper, RestTemplate restTemplate, AppProperties appProperties, BillerDAORepository billerDAORepository) {
+			ObjectMapper objectMapper, RestTemplate restTemplate, AppProperties appProperties,
+			BillerDAORepository billerDAORepository) {
 		this.indexDAORepository = indexDAORepository;
 		this.mongoTemplate = mongoTemplate;
 		this.objectMapper = objectMapper;
@@ -101,21 +103,23 @@ public class IndexingOpsService {
 				indexDetailsData.getData().put("tag", indexDetailsData.getTag());
 				indexDetailsDAO_.setReference(indexDetailsData.getId() != null ? indexDetailsData.getId()
 						: String.valueOf(System.currentTimeMillis()));
-				indexDetailsDAO_.setData(objectMapper.writeValueAsString(indexDetailsData.getData()));
+				indexDetailsDAO_.setFieldValues(indexDetailsData.getData().values());
+				indexDetailsDAO_.setRawData(objectMapper.writeValueAsString(indexDetailsData.getData()));
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				indexDetailsDAO_.setData(indexDetailsData.toString());
+				indexDetailsDAO_.setRawData(indexDetailsData.toString());
 			}
 			return indexDetailsDAO_;
 		} else {
 			BeanUtils.copyProperties(indexDetailsDAO_, indexDetailsData, new String[] { "data" });
 			try {
-				indexDetailsData.setData(objectMapper.readValue(indexDetailsDAO_.getData(), HashMap.class));
+				indexDetailsData.setData(objectMapper.readValue(indexDetailsDAO_.getRawData(), HashMap.class));
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				indexDetailsDAO_.setData(indexDetailsData.toString());
+				indexDetailsData.setData(
+						(HashMap<String, String>) Collections.singletonMap("data", indexDetailsDAO_.getRawData()));
 			}
 			return indexDetailsData;
 		}
@@ -124,8 +128,8 @@ public class IndexingOpsService {
 	public List<IndexDetailsData> searchIndex(String searchQuery) {
 		try {
 			Query query = new Query();
-			query.addCriteria(Criteria.where("data").regex(searchQuery));
-//			TextQuery query = TextQuery.queryText(new TextCriteria().matching(".*" + searchQuery + "*")).sortByScore()
+			query.addCriteria(Criteria.where("fieldValues").regex(searchQuery));
+//			TextQuery query = TextQuery.queryText(new TextCriteria().matching(searchQuery)).sortByScore()
 //					.includeScore();
 			List<IndexDetailsDAO_> records = mongoTemplate.find(query, IndexDetailsDAO_.class);
 			if (!records.isEmpty()) {

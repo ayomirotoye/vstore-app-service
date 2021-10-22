@@ -1,6 +1,7 @@
 package org.vfd.vee_tranx.daos.mongodb;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 import javax.validation.constraints.NotNull;
 
@@ -24,14 +25,12 @@ public class IndexDetailsDAO_ {
 	@Id
 	private String id;
 	@Indexed(unique = true)
-	@TextIndexed
 	String reference;
 	@NotNull
-	@TextIndexed
 	String tag;
 	@TextIndexed
-	String data;
-	@TextIndexed
+	Collection<String> fieldValues;
+	String rawData;
 	LocalDateTime dateCreated;
 	@TextScore
 	private Float score;
