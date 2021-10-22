@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("vstore")
 @Slf4j
+@Validated
 public class IndexingController {
 	private IndexingOpsService indexingOpsService;
 
@@ -45,10 +49,16 @@ public class IndexingController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getDocs(@RequestParam(required = false) String searchBy) {
-		List<IndexDetailsData> traDao = indexingOpsService.searchIndex(searchBy);
-		if (traDao != null) {
-			return ResponseEntity.ok().body(traDao);
+	public ResponseEntity<?> getDocs(@RequestParam(required = true) @NotNull String searchBy) {
+		if (searchBy != null && !searchBy.isEmpty()) {
+
+			List<IndexDetailsData> traDao = indexingOpsService.searchIndex(searchBy);
+			if (traDao != null) {
+				return ResponseEntity.ok().body(traDao);
+			} else {
+				return ResponseEntity.ok()
+						.body(GenericResponse.builder().message(ResponseCodeEnum.NO_RECORD.getMessage()).build());
+			}
 		} else {
 			return ResponseEntity.ok()
 					.body(GenericResponse.builder().message(ResponseCodeEnum.NO_RECORD.getMessage()).build());

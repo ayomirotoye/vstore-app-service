@@ -14,7 +14,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>vee_tranx</name>
 	<description>A POC on Using MongoDB and Elasticsearch API capabilities</description>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -47,6 +47,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
 	</dependencies>
 
