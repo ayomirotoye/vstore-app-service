@@ -15,4 +15,5 @@ public class CreateBillerReq {
 	private String billerName;
 	private String categoryId;
 	private String categoryName;
+	private String tag;
 }

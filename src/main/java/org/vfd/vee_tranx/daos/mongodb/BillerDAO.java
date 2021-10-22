@@ -19,6 +19,7 @@ public class BillerDAO {
 	@Id
 	private String id;
 	private String billerId;
+	private String tag;
 	@Indexed(unique = true)
 	@TextIndexed
 	private String billerName;
