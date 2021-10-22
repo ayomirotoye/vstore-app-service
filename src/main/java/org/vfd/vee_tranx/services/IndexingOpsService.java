@@ -118,8 +118,9 @@ public class IndexingOpsService {
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				indexDetailsData.setData(
-						(HashMap<String, String>) Collections.singletonMap("data", indexDetailsDAO_.getRawData()));
+				HashMap<String, Object> newMap = new HashMap<>();
+				newMap.put("data", indexDetailsDAO_.getRawData());
+				indexDetailsData.setData((newMap));
 			}
 			return indexDetailsData;
 		}

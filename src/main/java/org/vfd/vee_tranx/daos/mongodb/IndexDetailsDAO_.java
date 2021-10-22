@@ -29,7 +29,7 @@ public class IndexDetailsDAO_ {
 	@NotNull
 	String tag;
 	@TextIndexed
-	Collection<String> fieldValues;
+	Collection<Object> fieldValues;
 	String rawData;
 	LocalDateTime dateCreated;
 	@TextScore

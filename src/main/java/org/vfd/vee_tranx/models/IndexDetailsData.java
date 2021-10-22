@@ -19,7 +19,7 @@ public class IndexDetailsData {
 	String reference;
 	@NotNull
 	private String tag;
-	private HashMap<String, String> data;
+	private HashMap<String, Object> data;
 	LocalDateTime dateCreated;
 
 }
